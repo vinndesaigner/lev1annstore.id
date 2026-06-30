@@ -6,7 +6,80 @@
   <title>MLBB Joki Store – Rank Up Cepat & Aman</title>
   <link rel="icon" type="image/png" href="myicon.png">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <style>
+    /* Container utama background meteor */
+.meteor-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; 
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Base style untuk meteor */
+.meteor, .meteor-cepat, .meteor-lambat {
+  position: absolute;
+  width: 2px;
+  height: 100px; 
+  background: linear-gradient(to bottom, rgba(245, 197, 24, 1), rgba(245, 197, 24, 0)); 
+  transform: rotate(-45deg); 
+  opacity: 0;
+  box-shadow: 0 0 10px rgba(245, 197, 24, 0.8), 0 0 20px rgba(245, 197, 24, 0.4);
+}
+
+/* Animasi meluncur jatuh */
+@keyframes jatuh {
+  0% {
+    top: -150px;
+    opacity: 0;
+    transform: translateX(0) rotate(-45deg);
+  }
+  10% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    top: 100%;
+    transform: translateX(-800px) rotate(-45deg); 
+    opacity: 0;
+  }
+}
+
+/* Mengatur posisi acak dan kecepatan tiap meteor */
+.meteor:nth-child(1) { left: 80%; animation: jatuh 6s linear infinite; animation-delay: 0s; }
+.meteor:nth-child(2) { left: 60%; animation: jatuh 8s linear infinite; animation-delay: 2s; }
+.meteor:nth-child(4) { left: 95%; animation: jatuh 7s linear infinite; animation-delay: 4s; }
+.meteor:nth-child(6) { left: 50%; animation: jatuh 9s linear infinite; animation-delay: 1s; }
+
+/* Meteor yang meluncur cepet banget */
+.meteor-cepat:nth-child(3) { 
+  left: 90%; 
+  height: 130px;
+  background: linear-gradient(to bottom, #fff, rgba(245, 197, 24, 0)); 
+  animation: jatuh 3.5s linear infinite; 
+  animation-delay: 3s; 
+}
+.meteor-cepat:nth-child(7) { 
+  left: 70%; 
+  height: 120px;
+  animation: jatuh 4s linear infinite; 
+  animation-delay: 5s; 
+}
+
+/* Meteor yang jalannya agak santai */
+.meteor-lambat:nth-child(5) { 
+  left: 40%; 
+  height: 80px;
+  animation: jatuh 12s linear infinite; 
+  animation-delay: 0.5s; 
+}
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -25,7 +98,32 @@
     }
 
     html { scroll-behavior: smooth; }
+    .swiper {
+  width: 100%;
+  max-width: 1000px; 
+  height: 280px;     
+  margin: 20px auto;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
 
+.swiper-slide {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  object-position: top;
+}
+
+.swiper-button-next, .swiper-button-prev {
+  color: var(--gold) !important;
+  z-index: 10;
+}
     body {
       background: var(--bg);
       color: var(--text);
@@ -584,7 +682,49 @@
       margin: 1rem 0 1.5rem;
       text-align: left;
     }
+    footer {
+  position: relative;
+  background: #060911;
+  padding: 50px 0 20px 0;
+  overflow: hidden;
+  border-top: 3px solid #f5c518;
+  box-shadow: 0 -15px 35px rgba(245, 197, 24, 0.2); 
+}
 
+footer::before {
+  content: '';
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(245, 197, 24, 0.12) 0%, rgba(245, 197, 24, 0.03) 50%, rgba(245, 197, 24, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(20px);
+}
+
+footer .footer-container, 
+footer .container, 
+footer div, 
+footer img, 
+footer p {
+  position: relative;
+  z-index: 2;
+}
+
+footer a {
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+footer a:hover {
+  color: #f5c518;
+  text-shadow: 0 0 8px rgba(245, 197, 24, 0.6);
+  padding-left: 5px;
+}
     @media (max-width: 640px) {
       nav ul { display: none; }
       .form-box { padding: 1.5rem; }
@@ -596,7 +736,15 @@
   </style>
 </head>
 <body>
-
+<div class="meteor-container">
+  <div class="meteor"></div>
+  <div class="meteor"></div>
+  <div class="meteor-cepat"></div>
+  <div class="meteor"></div>
+  <div class="meteor-lambat"></div>
+  <div class="meteor"></div>
+  <div class="meteor-cepat"></div>
+</div>
 <!-- NAVBAR -->
 <nav>
   <div class="logo">lev1nn<span>store</span>.id</div>
@@ -608,7 +756,22 @@
   </ul>
   <a href="#topup" class="btn-nav">Top Up Sekarang</a>
 </nav>
-
+<div class="swiper mySwiper">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">
+      <img src="hirara.png" alt="Banner 1">
+    </div>
+    <div class="swiper-slide">
+      <img src="lancedawn.png" alt="Banner 2">
+    </div>
+    <div class="swiper-slide">
+      <img src="skylar.jpg" alt="Banner 3">
+    </div>
+  </div>
+  <div class="swiper-pagination"></div>
+  <div class="swiper-button-prev"></div>
+  <div class="swiper-button-next"></div>
+</div>
 <!-- HERO -->
 <section class="hero">
   <div class="badge">⚡ Terpercaya & Profesional</div>
@@ -638,22 +801,10 @@
       <div class="card-price">Mulai <span>dari</span> Rp 15.000</div>
     </div>
     <div class="card">
-      <div class="card-icon">⭐</div>
-      <h3>Winstreak</h3>
-      <p>Butuh win berturut-turut untuk naik bintang? Kami handle sampai target tercapai.</p>
-      <div class="card-price">Mulai <span>dari</span> Rp 8.000</div>
-    </div>
-    <div class="card">
       <div class="card-icon">💎</div>
       <h3>Top Up Diamond</h3>
       <p>Top up diamond MLBB harga murah, proses cepat via server lokal. No delay.</p>
       <div class="card-price">Mulai <span>dari</span> Rp 1.500</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">🎯</div>
-      <h3>Push MMR</h3>
-      <p>Tingkatkan MMR kamu secara konsisten dengan strategi draft yang terukur.</p>
-      <div class="card-price">Mulai <span>dari</span> Rp 25.000</div>
     </div>
   </div>
 </section>
@@ -1114,7 +1265,6 @@
 
 <!-- TOAST -->
 <div id="toast">✅ Order terkirim! Admin akan menghubungi kamu segera.</div>
-
 <script>
   // ── DATA ──
   const RANK_NAMES = ['Warrior','Elite','Master','Grandmaster','Epic','Legend','Mythic','Mythic Honor','Mythic Glory','Mythic Immortal'];
@@ -1132,20 +1282,20 @@
   const RANK_DAYS   = ['','1–2 hari','1–2 hari','2–3 hari','2–3 hari','3–5 hari','3–7 hari','7–14 hari','14–21 hari','Custom (hubungi admin)'];
 
   const DIAMONDS = [
-    { amt: 5,    bonus: 0,   price: 2500,   ori: 3500   },
-    { amt: 10,   bonus: 0,   price: 4000,   ori: 5500   },
-    { amt: 12,   bonus: 1,   price: 4500,   ori: 6500   },
-    { amt: 15,   bonus: 0,   price: 5500,   ori: 8000   },
-    { amt: 17,   bonus: 1,   price: 5800,   ori: 8500   },
-    { amt: 19,   bonus: 2,   price: 6500,   ori: 9500   },
-    { amt: 22,   bonus: 2,   price: 7500,   ori: 11000  },
-    { amt: 28,   bonus: 3,   price: 9000,   ori: 13000  },
-    { amt: 36,   bonus: 3,   price: 11000,  ori: 16000  },
-    { amt: 44,   bonus: 4,   price: 13000,  ori: 19000  },
-    { amt: 59,   bonus: 6,   price: 17000,  ori: 24000  },
-    { amt: 64,   bonus: 6,   price: 18500,  ori: 27000  },
-    { amt: 71,   bonus: 7,   price: 20500,  ori: 29000  },
-    { amt: 85,   bonus: 8,   price: 24000,  ori: 34000  },
+    { amt: 5,    bonus: 0,   price: 1500,   ori: 3500   },
+    { amt: 10,   bonus: 0,   price: 3000,   ori: 5500   },
+    { amt: 12,   bonus: 1,   price: 3500,   ori: 6500   },
+    { amt: 15,   bonus: 0,   price: 4500,   ori: 8000   },
+    { amt: 17,   bonus: 1,   price: 4800,   ori: 8500   },
+    { amt: 19,   bonus: 2,   price: 5700,   ori: 9500   },
+    { amt: 22,   bonus: 2,   price: 6500,   ori: 11000  },
+    { amt: 28,   bonus: 3,   price: 7900,   ori: 13000  },
+    { amt: 36,   bonus: 3,   price: 10000,  ori: 16000  },
+    { amt: 44,   bonus: 4,   price: 11800,  ori: 19000  },
+    { amt: 59,   bonus: 6,   price: 15700,  ori: 24000  },
+    { amt: 64,   bonus: 6,   price: 17000,  ori: 27000  },
+    { amt: 71,   bonus: 7,   price: 18300,  ori: 29000  },
+    { amt: 85,   bonus: 8,   price: 22300,  ori: 34000  },
     { amt: 113,  bonus: 11,  price: 32000,  ori: 45000  },
     { amt: 128,  bonus: 12,  price: 36000,  ori: 51000  },
     { amt: 148,  bonus: 14,  price: 41000,  ori: 58000  },
@@ -1180,7 +1330,7 @@
     { amt: 2010, bonus: 302, price: 490000, ori: 692000, best: true },
   ];
 
-  const WDP = { wdp: true, amt: '220', price: 27500, ori: 45000, label: 'Weekly Diamond Pass', desc: '20 dm/hari × 7 hari + bonus login' };
+  const WDP = { wdp: true, amt: '220', price: 27900, ori: 45000, label: 'Weekly Diamond Pass', desc: '20 dm/hari × 7 hari + bonus login' };
 
   let selectedDiamond = null;
   let selectedPayment = '';
@@ -1321,7 +1471,6 @@
       `🎫 Item: ${namaItem}\n` +
       `🎮 ID Game: ${id}\n` +
       `💳 Pembayaran: ${selectedPayment}\n` +
-      `💰 Total: Rp ${dm.price.toLocaleString('id')}\n\n` +
       `💳 Transfer ke: ${nomorBayar[selectedPayment] || 'hubungi admin'}\n` +
       `Mohon konfirmasi setelah transfer, terima kasih!`
     );
@@ -1399,6 +1548,22 @@
       a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--text)' : '';
     });
   });
+new Swiper(".mySwiper", {
+  loop: true,
+  autoplay: {
+    delay: 3000,
+    disableOnInteraction: false, 
+    pauseOnMouseEnter: true, 
+  },
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+  },
+  navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+  },
+});
 </script>
 </body>
 </html>
