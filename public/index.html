@@ -1041,9 +1041,17 @@ footer a:hover {
       <input type="tel" id="wa" placeholder="08xxxxxxxxxx"/>
     </div>
     <div class="form-group">
-      <label for="id-game">ID Game MLBB</label>
-      <input type="text" id="id-game" placeholder="Contoh: 123456789 (1234)"/>
+    <label style="display: block; margin-bottom: 8px; font-weight: bold;">User Data MLBB</label>
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px;">
+        <div>
+            <input type="text" id="id-game" placeholder="Masukkan ID" style="width: 100%;" />
+        </div>
+        <div>
+            <input type="text" id="id-server" placeholder="Server" style="width: 100%;" />
+        </div>
     </div>
+    <div id="nicknameDisplay" style="margin-top: 5px; font-size: 14px;"></div>
+</div>
     <div class="form-group">
       <label for="layanan">Pilih Layanan</label>
       <select id="layanan">
@@ -1173,7 +1181,11 @@ footer a:hover {
         <div class="form-box" style="padding:1.5rem;max-width:100%">
           <div class="form-group">
             <label>ID Game MLBB</label>
-            <input type="text" id="tu-id" placeholder="Contoh: 123456789 (1234)" oninput="updateSummary()"/>
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 5px;">
+    <input type="text" id="id-game-top" placeholder="Masukkan ID" style="width: 100%;" />
+    <input type="text" id="id-server-top" placeholder="Server" style="width: 100%;" />
+</div>
+<div id="nicknameDisplayTop" style="margin-top: 5px; font-size: 14px;"></div>
             <small style="color:var(--muted);font-size:.78rem;margin-top:.3rem;display:block">Cek ID di profil game kamu</small>
           </div>
           <div class="form-group">
@@ -1552,8 +1564,8 @@ new Swiper(".mySwiper", {
   loop: true,
   autoplay: {
     delay: 3000,
-    disableOnInteraction: false, 
-    pauseOnMouseEnter: true, 
+    disableOnInteraction: false,
+    pauseOnMouseEnter: true,
   },
   pagination: {
     el: ".swiper-pagination",
@@ -1563,6 +1575,122 @@ new Swiper(".mySwiper", {
     nextEl: ".swiper-button-next",
     prevEl: ".swiper-button-prev",
   },
+});
+
+// Ambil elemen kedua kolom input (ID dan Server)
+const idInput = document.getElementById('id-game'); 
+const serverInput = document.getElementById('id-server'); // <--- SESUAIKAN ID SERVER LU DI SINI
+const nicknameDisplay = document.getElementById('nicknameDisplay'); 
+
+let debounceTimer;
+
+async function checkGameNicknameUniversal(idEl, serverEl, displayEl) {
+    if (!idEl || !serverEl || !displayEl) return;
+    
+    const targetId = idEl.value.trim();
+    const zoneId = serverEl.value.trim();
+
+    // Sistem pinter: cek apakah ID dan Server sudah diisi lengkap
+    if (targetId.length >= 5 && zoneId.length >= 3) {
+        if (idEl.dataset.lastChecked === `${targetId}-${zoneId}`) return; 
+        idEl.dataset.lastChecked = `${targetId}-${zoneId}`;
+
+        displayEl.innerText = "Checking nickname...";
+        try {
+            const response = await fetch('/api/check-nickname', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    gameCode: 'mobile-legends', 
+                    targetId: targetId,
+                    zoneId: zoneId
+                })
+            });
+            const result = await response.json();
+            if (result.status === 'success') {
+                displayEl.innerHTML = `<span style="color: #22c55e; font-weight: bold;">Your account is ${result.nickname} ✅</span>`;
+                
+                // Otomatis ngisi kolom Nama/Nickname di atas
+                let nameInput = document.querySelector('input[placeholder*="Aldi"], input[id*="name"]');
+                if (nameInput) {
+                    nameInput.value = result.nickname;
+                }
+            } else {
+                displayEl.innerHTML = `<span style="color: #ef4444;">${result.message}</span>`;
+            }
+        } catch (error) {
+            displayEl.innerText = "";
+            idEl.dataset.lastChecked = "";
+        }
+    } else {
+        displayEl.innerText = "";
+        idEl.dataset.lastChecked = "";
+    }
+}
+
+// PEMICU UNTUK FORM BAWAH
+const idInputBawah = document.getElementById('id-game');
+const serverInputBawah = document.getElementById('id-server');
+const displayBawah = document.getElementById('nicknameDisplay');
+
+const triggerBawah = () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        checkGameNicknameUniversal(idInputBawah, serverInputBawah, displayBawah);
+    }, 500);
+};
+if (idInputBawah) idInputBawah.addEventListener('input', triggerBawah);
+if (serverInputBawah) serverInputBawah.addEventListener('input', triggerBawah);
+
+// PEMICU UNTUK FORM ATAS
+const idInputAtas = document.getElementById('id-game-top');
+const serverInputAtas = document.getElementById('id-server-top');
+const displayAtas = document.getElementById('nicknameDisplayTop');
+
+const triggerAtas = () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        checkGameNicknameUniversal(idInputAtas, serverInputAtas, displayAtas);
+    }, 500);
+};
+if (idInputAtas) idInputAtas.addEventListener('input', triggerAtas);
+if (serverInputAtas) serverInputAtas.addEventListener('input', triggerAtas);
+document.getElementById('btnPesan').addEventListener('click', async (e) => {
+    e.preventDefault();
+    const rawValue = targetInput.value.trim();
+    let targetId = rawValue;
+    let zoneId = '';
+    if (rawValue.includes('(')) {
+        const parts = rawValue.split('(');
+        targetId = parts[0].trim();
+        zoneId = parts[1].replace(')', '').trim();
+    }
+    const serviceCode = 'MLA2010-S13'; 
+    if (!targetId) {
+        alert('ID Target jangan kosong, Cuy!');
+        return;
+    }
+    alert('Memproses pesanan lu, Vincent... Tunggu bentar!');
+    try {
+        const response = await fetch('/api/order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                service: serviceCode,
+                targetId: targetId,
+                zoneId: zoneId
+            })
+        });
+        const data = await response.json();
+        if (data.status === 'success') {
+            alert(`MANTAP! ${data.message}`);
+        } else {
+            alert(`Gagal, Cuy! Alasan: ${data.message}`);
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Waduh, ada error pas ngehubungin backend.');
+    }
 });
 </script>
 </body>
