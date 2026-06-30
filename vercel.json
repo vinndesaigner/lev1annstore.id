@@ -1,19 +1,8 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/check-nickname.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/check-nickname",
-      "dest": "api/check-nickname.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "public/$1"
+      "source": "/api/check-nickname",
+      "destination": "/api/check-nickname"
     }
   ]
 }
