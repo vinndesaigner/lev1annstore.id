@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ========================================================
 // 🔍 1. ENDPOINT UNTUK CEK NICKNAME GAME OTOMATIS
 // ========================================================
-app.post('/api/check-nickname', async (req, res) => {
+app.post('/', async (req, res) => { ...
     const { gameCode, targetId, zoneId } = req.body;
     console.log(`[CEK NAMA] Nyari nama buat Game: ${gameCode}, ID: ${targetId}, Zone: ${zoneId}`);
 
