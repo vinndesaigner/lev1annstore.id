@@ -1,6 +1,13 @@
 {
-  "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/check-nickname" },
-    { "source": "/(.*)", "destination": "/public/$1" }
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/check-nickname",
+      "dest": "/api/check-nickname.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/$1"
+    }
   ]
 }
