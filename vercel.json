@@ -1,13 +1,19 @@
 {
   "version": 2,
+  "builds": [
+    {
+      "src": "api/check-nickname.js",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
       "src": "/api/check-nickname",
-      "dest": "/api/check-nickname.js"
+      "dest": "api/check-nickname.js"
     },
     {
       "src": "/(.*)",
-      "dest": "/public/$1"
+      "dest": "public/$1"
     }
   ]
 }
