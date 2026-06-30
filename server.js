@@ -116,3 +116,5 @@ app.listen(PORT, () => {
     console.log(`Buka browser lu dan akses ke http://localhost:${PORT}`);
     console.log('=========================================');
 });
+
+module.exports = app;
