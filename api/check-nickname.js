@@ -18,7 +18,7 @@ module.exports = async (req, res) => {
         sign: dynamicSign,
         type: 'get-nickname',
         code: 'mobile-legends',
-        target: targetId,
+        target: 'userId',
         additional_target: zoneId
     };
 
