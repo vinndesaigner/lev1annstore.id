@@ -20,19 +20,21 @@ module.exports = async (req, res) => {
     console.log(`[PELACAK] Raw gabungan buat MD5: ${rawSignature}`);
     console.log(`[PELACAK] Hasil MD5 Hex: ${dynamicSign}`);
 
-    const payload = {
-        key: apiKey,
-        sign: dynamicSign,
-        type: 'get-nickname',
-        code: 'mobile-legends', 
-        target: targetId,
-        additional_target: zoneId,
-        // Tambahan parameter cadangan (beberapa versi API supplier butuh ini)
-        game: 'mobile-legends',
-        user_id: targetId,
-        zone_id: zoneId
-    };
-    const response = await axios.post('https://vip-reseller.co.id/api/game-feature', payload);
+   // 1. Ubah bungkus data menjadi Form URL Encoded
+    const payload = new URLSearchParams();
+    payload.append('key', apiKey);
+    payload.append('sign', dynamicSign);
+    payload.append('type', 'get-nickname');
+    payload.append('code', 'mobile-legends');
+    payload.append('target', targetId);
+    payload.append('additional_target', zoneId);
+
+    // 2. Kirim ke supplier dengan header application/x-www-form-urlencoded
+    const response = await axios.post('https://vip-reseller.co.id/api/game-feature', payload, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    });
     console.log('Respons Server Supplier:', response.data);
 
     if (response.data && response.data.result === true) {
