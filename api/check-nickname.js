@@ -17,7 +17,7 @@ module.exports = async (req, res) => {
         key: apiKey,
         sign: dynamicSign,
         type: 'get-nickname',
-        code: 'mobile-legends', // Coba nanti kalau gagal, ini mungkin perlu diganti jadi 'ml'
+        code: 'mobile-legends',
         target: targetId,
         additional_target: zoneId
     };
