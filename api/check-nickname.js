@@ -27,12 +27,11 @@ module.exports = async (req, res) => {
         target: targetId,
         zone: zoneId
     });
-
-    // 2. Cek apakah response sukses (result: true) berdasarkan image_fc03d5.png
+    
     if (response.data && response.data.result === true) {
         return res.status(200).json({
             success: true,
-            nickname: response.data.data // Ngambil string nickname asli (ex: Itacimo)
+            nickname: response.data.data 
         });
     } else {
         return res.status(400).json({
