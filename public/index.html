@@ -1655,7 +1655,7 @@ const triggerAtas = () => {
 };
 if (idInputAtas) idInputAtas.addEventListener('input', triggerAtas);
 if (serverInputAtas) serverInputAtas.addEventListener('input', triggerAtas);
-document.getElementById('btnPesan').addEventListener('click', async (e) => {
+document.getElementById('btnPesan')?.addEventListener('click', async (e) => {
     e.preventDefault();
     const rawValue = targetInput.value.trim();
     let targetId = rawValue;
@@ -1682,11 +1682,11 @@ document.getElementById('btnPesan').addEventListener('click', async (e) => {
             })
         });
         const data = await response.json();
-        if (data.status === 'success') {
-            alert(`MANTAP! ${data.message}`);
-        } else {
-            alert(`Gagal, Cuy! Alasan: ${data.message}`);
-        }
+      if (data.success) {
+    alert(`MANTAP! ${data.nickname}`);
+} else {
+    alert(`Gagal, Cuy! Alasan: ${data.message || 'Error tidak diketahui'}`);
+}
     } catch (error) {
         console.error(error);
         alert('Waduh, ada error pas ngehubungin backend.');
