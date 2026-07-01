@@ -1607,8 +1607,14 @@ async function checkGameNicknameUniversal(idEl, serverEl, displayEl) {
                 })
             });
             const result = await response.json();
-          if (result.success) {
+         if (result.success) {
     displayEl.innerHTML = `<span style="color: #22c55e; font-weight: bold;">Your account is ${result.nickname}</span>`;
+    
+    // Ini kode ajaib buat mindahin namanya langsung ke kotak paling atas
+    let nameInput = document.querySelector('input[placeholder*="Contoh: Aldi Gaming"]');
+    if (nameInput) {
+        nameInput.value = result.nickname;
+    }
 } else {
     displayEl.innerHTML = `<span style="color: #ef4444;">${result.nickname || 'Gagal mengecek nickname'}</span>`;
 }
