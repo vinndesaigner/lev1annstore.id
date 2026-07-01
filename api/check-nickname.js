@@ -26,9 +26,12 @@ module.exports = async (req, res) => {
         type: 'get-nickname',
         code: 'mobile-legends', 
         target: targetId,
-        additional_target: zoneId
+        additional_target: zoneId,
+        // Tambahan parameter cadangan (beberapa versi API supplier butuh ini)
+        game: 'mobile-legends',
+        user_id: targetId,
+        zone_id: zoneId
     };
-
     const response = await axios.post('https://vip-reseller.co.id/api/game-feature', payload);
     console.log('Respons Server Supplier:', response.data);
 
