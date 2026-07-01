@@ -1,54 +1,43 @@
 const axios = require('axios');
-const crypto = require('crypto'); // Modul bawaan Node.js buat bikin MD5 otomatis
+const crypto = require('crypto');
 
 module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method tidak diizinkan, harus POST!' });
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method salah!' });
 
   try {
-    const { gameCode, targetId, zoneId } = req.body;
-    console.log(`[CEK NAMA] Nyari nama buat Game: ${gameCode}, ID: ${targetId}, Zone: ${zoneId}`);
+    const { targetId, zoneId } = req.body;
+    const apiId = process.env.VIP_ID;
+    const apiKey = process.env.VIP_KEY;
 
-    // 1. Generate formula md5(API ID + API KEY) secara dinamis sesuai dokumentasi
-    const apiId = process.env.VIP_ID;    // API ID / Member ID lu di VIP-Reseller
-    const apiKey = process.env.VIP_KEY;  // API KEY lu yang panjang itu
-    
-    if (!apiId || !apiKey) {
-        console.error('Variable VIP_ID atau VIP_KEY belum di-set di Vercel, Cuy!');
-    }
+    // Generate Signature
+    const dynamicSign = crypto.createHash('md5').update(apiId + apiKey).digest('hex');
 
-    const rawSignature = apiId + apiKey;
-    const dynamicSign = crypto.createHash('md5').update(rawSignature).digest('hex');
-
-    // 2. Tembak ke VIP-Reseller pake nama parameter yang bener sesuai image_fddc94.png
-    const response = await axios.post('https://vip-reseller.co.id/api/game-feature', {
-        key: apiKey, 
-        sign: dynamicSign,  
-        type: 'get-nickname',               
-        code: 'mobile-legends', // disesuaikan dari 'game' menjadi 'code'
+    // Paket Data
+    const payload = {
+        key: apiKey,
+        sign: dynamicSign,
+        type: 'get-nickname',
+        code: 'mobile-legends', // Coba nanti kalau gagal, ini mungkin perlu diganti jadi 'ml'
         target: targetId,
-        additional_target: zoneId // disesuaikan dari 'zone' menjadi 'additional_target'
-    });
+        additional_target: zoneId
+    };
 
-    // 3. Cek apakah response sukses (result: true)
+    // CCTV: Print payload ke log Vercel
+    console.log('--- DATA YANG DIKIRIM KE VIP-RESELLER ---');
+    console.log(JSON.stringify(payload, null, 2));
+
+    const response = await axios.post('https://vip-reseller.co.id/api/game-feature', payload);
+
+    console.log('Respons Server:', response.data);
+
     if (response.data && response.data.result === true) {
-        return res.status(200).json({
-            success: true,
-            nickname: response.data.data
-        });
+        return res.status(200).json({ success: true, nickname: response.data.data });
     } else {
-        return res.status(400).json({
-            success: false,
-            nickname: response.data.message || 'ID atau Server salah, Cuy!'
-        });
+        return res.status(400).json({ success: false, nickname: response.data.message || 'Gagal' });
     }
 
   } catch (error) {
-    console.error('Error API:', error.message);
-    return res.status(500).json({ 
-        success: false, 
-        nickname: 'Gagal nge-cek nickname, server supplier bermasalah' 
-    });
+    console.error('Error Detail:', error.response ? error.response.data : error.message);
+    return res.status(500).json({ success: false, nickname: 'Cek error di Vercel Log' });
   }
 };
